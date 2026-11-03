@@ -4,6 +4,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import SiteNav from "@/components/SiteNav";
 import Footer from "@/components/Footer";
+import ClearBusinessDataButton from "@/components/ClearBusinessDataButton";
 import { createClient } from "@/lib/supabase/client";
 import { formatSLE } from "@/lib/money";
 import { formatDate, formatDateTime } from "@/lib/datetime";
@@ -674,6 +675,15 @@ export default function AdminPage() {
     }
   }
 
+  async function handleBusinessDataCleared() {
+    setProfitSummary({ paid_sales: 0, product_cost: 0, operating_expenses: 0, net_profit: 0, fully_paid_orders: 0, excluded_orders: 0 });
+    setOnlineOrders([]);
+    setReceiptOrder(null);
+    setSalesAnalysis(null);
+    setMessage("");
+    await load();
+  }
+
   async function signOut() {
     const db = createClient();
     await db.auth.signOut();
@@ -900,6 +910,12 @@ export default function AdminPage() {
           <button className="btn ghost" onClick={signOut}>Sign out</button>
         </div>
       </div>
+
+      {["owner", "admin"].includes(role) && (
+        <div className="danger-zone">
+          <ClearBusinessDataButton onCleared={handleBusinessDataCleared} />
+        </div>
+      )}
 
       {message && <div className="notice" style={{ marginTop: 18 }}>{message}</div>}
 
