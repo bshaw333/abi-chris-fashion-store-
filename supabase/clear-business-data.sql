@@ -61,3 +61,5 @@ $$;
 
 revoke all on function public.admin_clear_business_data() from public, anon;
 grant execute on function public.admin_clear_business_data() to authenticated;
+
+notify pgrst, 'reload schema';
